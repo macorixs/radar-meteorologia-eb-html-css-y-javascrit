@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar Meteorológico en Tiempo Real</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-animated-tile-layer/0.2.1/AnimatedTileLayer.min.js"></script>
+    <script>
+        // Inicializar el mapa
+        const map = L.map('map').setView([40.7128, -74.0060], 5); // Vista inicial
+
+        // Agregar mapa base (por ejemplo, OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Agregar capas meteorológicas usando OpenWeatherMap
+        const apiKey = '0f8b41aaff55557ca0749c2996270010';
+
+        const layers = {
+            nubes: L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`),
+            precipitacion: L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`),
+            temperatura: L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${apiKey}`),
+            viento: L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${apiKey}`),
+            presion: L.tileLayer(`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${apiKey}`),
+            // Agregar más capas si es necesario (nieve, olas, etc.)
+        };
+
+        // Agregar control de capas al mapa
+        L.control.layers(null, layers).addTo(map);
+
+        // Cargar una capa por defecto (nubes)
+        layers.nubes.addTo(map);
+
+        // Para agregar animación a las capas
+        let animLayer = L.animatedTileLayer({
+            url: `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`,
+            tileSize: 256,
+            updateWhenIdle: false,
+            opacity: 0.5,
+            zIndex: 1000
+        }).addTo(map);
+    </script>
+</body>
+</html>
